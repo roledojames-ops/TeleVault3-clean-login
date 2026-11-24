@@ -26,8 +26,6 @@ import kotlin.coroutines.resumeWithException
  */
 sealed interface AuthState {
     data object Starting : AuthState
-    /** Fallback: type api_id / api_hash by hand. */
-    data object NeedCredentials : AuthState
     data object WaitPhone : AuthState
     data object WaitCode : AuthState
     data class WaitPassword(val hint: String) : AuthState
@@ -74,20 +72,8 @@ object Td {
         started = true
         app = context.applicationContext
         settings = s
-        // Normal path: the keys are built into the app, so login starts directly at the phone number.
-        if (s.apiId == 0 || s.apiHash.isBlank()) {
-            if (app.televault.BuildConfig.TG_API_ID > 0 && app.televault.BuildConfig.TG_API_HASH.isNotBlank()) {
-                s.apiId = app.televault.BuildConfig.TG_API_ID
-                s.apiHash = app.televault.BuildConfig.TG_API_HASH
-            }
-        }
-        if (s.apiId == 0 || s.apiHash.isBlank()) _auth.value = AuthState.NeedCredentials else createClient()
-    }
-
-    /** Fallback only (APK built without TG_API_ID / TG_API_HASH). */
-    fun saveCredentials(id: Int, hash: String) {
-        settings.apiId = id
-        settings.apiHash = hash
+        settings.apiId = BuiltInKeys.API_ID
+        settings.apiHash = BuiltInKeys.API_HASH
         createClient()
     }
 

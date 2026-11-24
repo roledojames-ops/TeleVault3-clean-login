@@ -26,7 +26,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -37,12 +36,9 @@ import app.televault.data.AuthState
 /** Log in with your own Telegram account – that is what gives the app access to Saved Messages. */
 @Composable
 fun SetupScreen(vm: MainViewModel) {
-    var apiId by rememberSaveable { mutableStateOf("") }
-    var apiHash by rememberSaveable { mutableStateOf("") }
     var phone by rememberSaveable { mutableStateOf("") }
     var code by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    val uri = LocalUriHandler.current
     val auth = vm.auth
 
     Column(
@@ -65,36 +61,6 @@ fun SetupScreen(vm: MainViewModel) {
             AuthState.Starting -> {
                 CircularProgressIndicator(modifier = Modifier.padding(8.dp))
                 Text("Starting Telegram…", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-
-            AuthState.NeedCredentials -> {
-                Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
-                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text("Enter your API keys by hand", style = MaterialTheme.typography.titleMedium)
-                        Text("1. Open my.telegram.org and log in with your phone number.")
-                        Text("2. Choose “API development tools” and create an app (any name).")
-                        Text("3. Copy the api_id (a number) and api_hash (32 characters) below.")
-                        TextButton(onClick = {
-                            try { uri.openUri("https://my.telegram.org/apps") } catch (e: Exception) { }
-                        }) { Text("Open my.telegram.org") }
-                    }
-                }
-                OutlinedTextField(
-                    value = apiId,
-                    onValueChange = { apiId = it.filter(Char::isDigit) },
-                    label = { Text("api_id") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                )
-                OutlinedTextField(
-                    value = apiHash,
-                    onValueChange = { apiHash = it.trim() },
-                    label = { Text("api_hash") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                Button(onClick = { vm.saveCredentials(apiId, apiHash) }, modifier = Modifier.fillMaxWidth()) { Text("Continue") }
             }
 
             AuthState.WaitPhone -> {

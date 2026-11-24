@@ -4,12 +4,8 @@ The app now logs in as YOU (TDLib, Telegram's official client library) instead o
 because only a real account can write to Saved Messages.
 
 ## First run
-Login is the normal Telegram flow: phone number -> code -> 2-step password (if set). No my.telegram.org step.
-The app ships with ONE set of API keys, baked in at build time:
-1. Register a single app at https://my.telegram.org (API development tools) once.
-2. Provide `TG_API_ID` and `TG_API_HASH` as environment variables / GitHub Actions secrets,
-   or as properties in `~/.gradle/gradle.properties`.
-3. Build. (If built without them, the app falls back to a manual api_id/api_hash screen.)
+Login is the normal Telegram flow: phone number -> code -> 2-step password (if set). Nothing else to set up.
+TDLib needs an api_id/api_hash to start, so a pair is built into the app (`data/BuiltInKeys.kt`), like in every Telegram client.
 
 ## Things to check on the first build
 * Dependency: `app/build.gradle.kts` uses `com.github.tdlibx:td:1.8.56` from JitPack

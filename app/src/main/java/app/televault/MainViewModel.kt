@@ -89,17 +89,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun saveCredentials(idText: String, hash: String) {
-        val id = idText.trim().toIntOrNull()
-        val h = hash.trim()
-        if (id == null || id <= 0 || h.length < 16) {
-            setupError = "Enter the numeric api_id and the 32-character api_hash from my.telegram.org"
-            return
-        }
-        setupError = null
-        Td.saveCredentials(id, h)
-    }
-
     fun submitPhone(phone: String) {
         val p = phone.trim()
         if (p.length < 6) {

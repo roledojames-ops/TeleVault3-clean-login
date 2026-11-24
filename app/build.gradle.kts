@@ -16,13 +16,6 @@ android {
         versionName = "2.0.0"
         ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
 
-        // TeleVault's own Telegram API keys (register ONE app at my.telegram.org, once).
-        // Set TG_API_ID / TG_API_HASH as environment variables (e.g. GitHub Actions secrets)
-        // or in ~/.gradle/gradle.properties. Users never see or type them.
-        val tgId = (System.getenv("TG_API_ID") ?: (project.findProperty("TG_API_ID") as String?) ?: "0").trim()
-        val tgHash = (System.getenv("TG_API_HASH") ?: (project.findProperty("TG_API_HASH") as String?) ?: "").trim()
-        buildConfigField("int", "TG_API_ID", if (tgId.toIntOrNull() != null) tgId else "0")
-        buildConfigField("String", "TG_API_HASH", "\"$tgHash\"")
     }
 
     buildTypes {
@@ -41,7 +34,6 @@ android {
     }
     buildFeatures {
         compose = true
-        buildConfig = true
     }
     packaging {
         resources {
